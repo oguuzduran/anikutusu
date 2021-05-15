@@ -1,7 +1,11 @@
 import './App.css';
 
 function App() {
-	return <div className="App">dsadasd</div>;
+	return (
+		<div className="App">
+			<h1>merhaba dünya</h1>
+		</div>
+	);
 }
 
 export default App;
