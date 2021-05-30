@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactFileBase64 from 'react-file-base64';
 import { useHistory } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 
-import { useDispatch } from 'react-redux';
-import { createMemory } from '../actions/memoryActions';
+import { updateMemory } from '../actions/memoryActions';
 
-const SubmitMemory = () => {
+import { useDispatch } from 'react-redux';
+
+import { fetchMemory } from '../axios/index.js';
+
+const UpdateMemory = ({ id }) => {
+	const dispatch = useDispatch();
 	const [memoryData, setMemoryData] = useState({
 		title: '',
 		content: '',
@@ -14,27 +18,34 @@ const SubmitMemory = () => {
 		images: '',
 	});
 
-	const history = useHistory();
+	useEffect(() => {
+		const getMemo = async () => {
+			const { data } = await fetchMemory(id);
+			setMemoryData(data);
+		};
+		getMemo();
+	}, [id]);
 
-	const dispatch = useDispatch();
+	const history = useHistory();
 
 	return (
 		<div>
 			<Form
 				onSubmit={(e) => {
 					e.preventDefault();
-					dispatch(createMemory(memoryData));
+					dispatch(updateMemory(id, memoryData));
 					history.push('/');
 				}}
 			>
 				<Form.Group className="text-center p-2">
-					<h1>Bir Anı Oluştur</h1>
+					<h1>Anıyı Güncelle</h1>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Başlık</Form.Label>
 					<Form.Control
 						name="title"
 						type="text"
+						value={memoryData.title}
 						onChange={(e) => setMemoryData({ ...memoryData, title: e.target.value })}
 					></Form.Control>
 				</Form.Group>
@@ -43,6 +54,7 @@ const SubmitMemory = () => {
 					<Form.Control
 						name="author"
 						type="text"
+						value={memoryData.creator}
 						onChange={(e) => setMemoryData({ ...memoryData, creator: e.target.value })}
 					></Form.Control>
 				</Form.Group>
@@ -52,6 +64,7 @@ const SubmitMemory = () => {
 						name="content"
 						type="text"
 						as="textarea"
+						value={memoryData.content}
 						rows={3}
 						onChange={(e) => setMemoryData({ ...memoryData, content: e.target.value })}
 					></Form.Control>
@@ -64,11 +77,11 @@ const SubmitMemory = () => {
 					/>
 				</Form.Group>
 				<Button type="submit" block>
-					Gönder
+					Güncelle
 				</Button>
 			</Form>
 		</div>
 	);
 };
 
-export default SubmitMemory;
+export default UpdateMemory;

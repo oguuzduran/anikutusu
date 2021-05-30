@@ -51,14 +51,14 @@ router.put('/:id', async (req, res) => {
 		if (!mongoose.Types.ObjectId.isValid(id))
 			res.status(404).json({ message: 'Memory id is not valid' });
 
-		const { title, content, creator, image } = req.body;
+		const { title, content, creator, images } = req.body;
 		const updatedMemory = await Memory.findByIdAndUpdate(
 			id,
 			{
 				title,
 				content,
 				creator,
-				image,
+				images,
 				_id: id,
 			},
 			{ new: true },
